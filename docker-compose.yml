@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
-    expose:
-      - "3000"
+    ports:
+      - "127.0.0.1:3000:3000"
     volumes:
       - ./data:/app/data
       - ./public/videos:/app/public/videos
@@ -12,23 +12,3 @@ services:
       - DATABASE_URL=file:./data/database.sqlite
       - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
     restart: unless-stopped
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
-    depends_on:
-      - web
-    restart: unless-stopped
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
