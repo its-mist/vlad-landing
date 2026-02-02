@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "about": "About",
+    "projects": "Projects",
+    "contacts": "Contacts"
+  },
+  "hero": {
+    "scroll": "Scroll down"
+  },
+  "about": {
+    "title": "About Me"
+  },
+  "projects": {
+    "title": "Projects"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "email": "Email",
+    "phone": "Phone",
+    "telegram": "Telegram",
+    "instagram": "Instagram"
+  },
+  "admin": {
+    "login": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "aboutSection": "About",
+    "projectsSection": "Projects",
+    "contactsSection": "Contacts",
+    "settingsSection": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "titleRu": "Title (RU)",
+    "titleEn": "Title (EN)",
+    "bioRu": "Bio (RU)",
+    "bioEn": "Bio (EN)",
+    "descriptionRu": "Description (RU)",
+    "descriptionEn": "Description (EN)",
+    "youtubeUrl": "YouTube URL",
+    "visible": "Visible",
+    "type": "Type",
+    "value": "Value",
+    "backgroundVideo": "Background Video",
+    "siteTitle": "Site Title",
+    "photoUrl": "Photo URL",
+    "order": "Order"
+  }
+}

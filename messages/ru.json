@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "about": "Обо мне",
+    "projects": "Проекты",
+    "contacts": "Контакты"
+  },
+  "hero": {
+    "scroll": "Прокрутите вниз"
+  },
+  "about": {
+    "title": "Обо мне"
+  },
+  "projects": {
+    "title": "Проекты"
+  },
+  "contacts": {
+    "title": "Контакты",
+    "email": "Email",
+    "phone": "Телефон",
+    "telegram": "Telegram",
+    "instagram": "Instagram"
+  },
+  "admin": {
+    "login": "Вход в админ-панель",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "loginButton": "Войти",
+    "logout": "Выйти",
+    "dashboard": "Панель управления",
+    "aboutSection": "Обо мне",
+    "projectsSection": "Проекты",
+    "contactsSection": "Контакты",
+    "settingsSection": "Настройки",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "add": "Добавить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "titleRu": "Заголовок (RU)",
+    "titleEn": "Заголовок (EN)",
+    "bioRu": "Биография (RU)",
+    "bioEn": "Биография (EN)",
+    "descriptionRu": "Описание (RU)",
+    "descriptionEn": "Описание (EN)",
+    "youtubeUrl": "YouTube URL",
+    "visible": "Видимый",
+    "type": "Тип",
+    "value": "Значение",
+    "backgroundVideo": "Фоновое видео",
+    "siteTitle": "Название сайта",
+    "photoUrl": "URL фото",
+    "order": "Порядок"
+  }
+}
