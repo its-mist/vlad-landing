@@ -48,7 +48,6 @@ export default function Hero({ title, backgroundVideo }: HeroProps) {
           transition={{ delay: 1, duration: 1 }}
           className="absolute bottom-12 flex flex-col items-center gap-4"
         >
-          <span className="text-white/60 text-sm tracking-widest">{t('scroll')}</span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
