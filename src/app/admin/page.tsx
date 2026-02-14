@@ -38,38 +38,39 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-gray-800 rounded-lg shadow-xl p-8">
-          <h1 className="text-2xl font-light text-center mb-8 tracking-wider">
-            Admin Login
-          </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-medium tracking-widest text-white">VM</h1>
+          <p className="text-gray-600 text-sm mt-2 tracking-wider">Admin Panel</p>
+        </div>
 
+        <div className="bg-gray-900 border border-white/5 rounded-2xl p-8">
           {error && (
-            <div className="mb-6 p-3 bg-red-500/20 border border-red-500/50 rounded text-red-300 text-sm">
+            <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Username</label>
+              <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wider">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:border-white/50 transition-colors"
+                className="w-full px-4 py-3 bg-gray-950 border border-white/10 rounded-lg focus:outline-none focus:border-white/30 transition-colors text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Password</label>
+              <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wider">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:border-white/50 transition-colors"
+                className="w-full px-4 py-3 bg-gray-950 border border-white/10 rounded-lg focus:outline-none focus:border-white/30 transition-colors text-sm"
                 required
               />
             </div>
@@ -77,15 +78,11 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-white text-black font-medium rounded hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-white text-black text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
-
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Default: admin / admin123
-          </p>
         </div>
       </div>
     </div>
