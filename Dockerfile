@@ -41,12 +41,13 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy node_modules for prisma
+# Copy node_modules for prisma (client + CLI for db push)
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
-# Create data directory with correct ownership
-RUN mkdir -p /app/prisma/data && chown -R nextjs:nodejs /app/prisma/data
+# Create data directory
+RUN mkdir -p /app/data
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
@@ -57,5 +58,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Run as root so entrypoint can fix volume permissions, then exec as node
 CMD ["/app/entrypoint.sh"]
