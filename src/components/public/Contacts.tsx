@@ -61,7 +61,7 @@ export default function Contacts({ contacts }: ContactsProps) {
   return (
     <AnimatedSection
       id="contacts"
-      className="min-h-screen bg-gray-900 py-24 px-6 flex items-center"
+      className="bg-gray-900 py-24 px-6"
     >
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase mb-16">
@@ -87,11 +87,6 @@ export default function Contacts({ contacts }: ContactsProps) {
           ))}
         </div>
 
-        <div className="mt-24 pt-12 border-t border-white/10 text-center">
-          <p className="text-white/30 text-sm">
-            &copy; {new Date().getFullYear()} Producer Portfolio
-          </p>
-        </div>
       </div>
     </AnimatedSection>
   )
