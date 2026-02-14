@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 
 interface HeroProps {
@@ -9,7 +8,6 @@ interface HeroProps {
 }
 
 export default function Hero({ title, backgroundVideo }: HeroProps) {
-  const t = useTranslations('hero')
 
   return (
     <section className="relative h-screen w-full overflow-hidden">

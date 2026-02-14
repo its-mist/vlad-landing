@@ -5,6 +5,7 @@ import Hero from '@/components/public/Hero'
 import About from '@/components/public/About'
 import Projects from '@/components/public/Projects'
 import Contacts from '@/components/public/Contacts'
+import SnapScroll from '@/components/public/SnapScroll'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,21 +46,29 @@ export default async function HomePage() {
   const { about, projects, contacts, settings } = await getData(locale)
 
   return (
-    <main className="bg-black min-h-screen">
+    <SnapScroll>
       <Header />
-      <Hero
-        title={about?.title || 'PRODUCER'}
-        backgroundVideo={settings?.backgroundVideo || undefined}
-      />
-      {about && (
-        <About
-          title={about.title}
-          bio={about.bio}
-          photoUrl={about.photoUrl}
+      <section className="snap-start">
+        <Hero
+          title={about?.title || 'PRODUCER'}
+          backgroundVideo={settings?.backgroundVideo || undefined}
         />
+      </section>
+      {about && (
+        <section className="snap-start">
+          <About
+            title={about.title}
+            bio={about.bio}
+            photoUrl={about.photoUrl}
+          />
+        </section>
       )}
-      <Projects projects={projects} />
-      <Contacts contacts={contacts} />
-    </main>
+      <section className="snap-start">
+        <Projects projects={projects} />
+      </section>
+      <section className="snap-start">
+        <Contacts contacts={contacts} />
+      </section>
+    </SnapScroll>
   )
 }
