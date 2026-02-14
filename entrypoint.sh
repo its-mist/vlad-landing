@@ -3,10 +3,9 @@ set -e
 
 DB_PATH="/app/data/database.sqlite"
 
-# Ensure data directory exists and is writable by nextjs
-mkdir -p /app/data
+# Ensure data directory and uploads exist and are writable by nextjs
+mkdir -p /app/data/uploads
 chown -R nextjs:nodejs /app/data
-chown -R nextjs:nodejs /app/public/videos 2>/dev/null || true
 
 # If database doesn't exist or is empty, create tables and seed
 if [ ! -s "$DB_PATH" ]; then

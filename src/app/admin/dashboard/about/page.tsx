@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface AboutData {
@@ -24,6 +24,8 @@ export default function AboutPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetch('/api/about')
@@ -42,6 +44,51 @@ export default function AboutPage() {
         setLoading(false)
       })
   }, [])
+
+  const uploadPhoto = useCallback(async (file: File) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      setMessage('Error: Only JPG, PNG, and WebP files are allowed')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setMessage('Error: File size must be under 10MB')
+      return
+    }
+
+    setUploading(true)
+    setMessage('')
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Upload failed')
+      }
+
+      const result = await res.json()
+      setData((prev) => ({ ...prev, photoUrl: result.url }))
+      setMessage('Photo uploaded! Click "Save Changes" to apply.')
+    } catch (error) {
+      setMessage(`Error: ${error instanceof Error ? error.message : 'Upload failed'}`)
+    } finally {
+      setUploading(false)
+    }
+  }, [])
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) uploadPhoto(file)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }, [uploadPhoto])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -123,14 +170,53 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-2">Photo URL (optional)</label>
-          <input
-            type="url"
-            value={data.photoUrl}
-            onChange={(e) => setData({ ...data, photoUrl: e.target.value })}
-            placeholder="https://example.com/photo.jpg"
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:border-white/50"
-          />
+          <label className="block text-sm text-gray-400 mb-2">Photo</label>
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="px-6 py-3 bg-gray-800 border border-gray-700 rounded hover:border-gray-500 transition-colors disabled:opacity-50"
+              >
+                {uploading ? 'Uploading...' : 'Choose Photo'}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              <p className="text-xs text-gray-500 mt-2">JPG, PNG, WebP — max 10MB</p>
+
+              {data.photoUrl && (
+                <div className="mt-2">
+                  <p className="text-xs text-gray-500">
+                    Current: <code className="bg-gray-700 px-2 py-0.5 rounded">{data.photoUrl}</code>
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setData({ ...data, photoUrl: '' })}
+                    className="mt-1 text-xs text-red-400 hover:text-red-300"
+                  >
+                    Remove photo
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {data.photoUrl && (
+              <div className="w-32 h-40 rounded overflow-hidden bg-gray-800 flex-shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={data.photoUrl}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {message && (
@@ -141,7 +227,7 @@ export default function AboutPage() {
 
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || uploading}
           className="px-8 py-3 bg-white text-black font-medium rounded hover:bg-gray-200 transition-colors disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save Changes'}

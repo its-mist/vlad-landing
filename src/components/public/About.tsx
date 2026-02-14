@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl'
 import AnimatedSection from './AnimatedSection'
-import Image from 'next/image'
 
 interface AboutProps {
   title: string
@@ -26,11 +25,11 @@ export default function About({ title, bio, photoUrl }: AboutProps) {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {photoUrl && (
             <div className="relative aspect-[3/4] overflow-hidden">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={photoUrl}
                 alt={title}
-                fill
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
             </div>
           )}

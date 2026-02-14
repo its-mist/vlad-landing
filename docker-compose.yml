@@ -7,9 +7,9 @@ services:
       - "3000"
     volumes:
       - ./data:/app/data
-      - ./public/videos:/app/public/videos
     environment:
       - DATABASE_URL=file:/app/data/database.sqlite
+      - UPLOAD_DIR=/app/data/uploads
       - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
     restart: unless-stopped
 
