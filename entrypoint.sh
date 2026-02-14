@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
 );
 
 -- Seed: admin user (password: admin123, bcrypt hash)
-INSERT OR IGNORE INTO "User" ("username", "password") VALUES ('admin', '$2a$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu9mu');
+INSERT OR IGNORE INTO "User" ("username", "password") VALUES ('admin', '$2a$10$w1MbnjQSx6xdKeZVvgxo1eKlzRknnCtIeqP2pAmn/MgwcpUXZTZvi');
 
 -- Seed: default about
 INSERT OR IGNORE INTO "About" ("id", "titleRu", "titleEn", "bioRu", "bioEn") VALUES (1, 'Продюсер', 'Producer', 'Опытный продюсер с многолетним стажем работы в индустрии развлечений.', 'Experienced producer with years of work in the entertainment industry.');
