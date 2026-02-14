@@ -54,19 +54,15 @@ export default async function HomePage() {
           backgroundVideo={settings?.backgroundVideo || undefined}
         />
       </section>
-      {about && (
-        <section className="snap-start">
+      <section className="snap-start">
+        {about && (
           <About
             title={about.title}
             bio={about.bio}
             photoUrl={about.photoUrl}
           />
-        </section>
-      )}
-      <section className="snap-start">
+        )}
         <Projects projects={projects} />
-      </section>
-      <section className="snap-start">
         <Contacts contacts={contacts} />
       </section>
     </SnapScroll>
