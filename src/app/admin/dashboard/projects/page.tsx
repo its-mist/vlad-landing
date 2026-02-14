@@ -102,21 +102,23 @@ export default function ProjectsPage() {
     const swapIndex = direction === 'up' ? index - 1 : index + 1
     if (swapIndex < 0 || swapIndex >= projects.length) return
 
-    const current = projects[index]
-    const swap = projects[swapIndex]
+    // Reorder in memory
+    const reordered = [...projects]
+    const [moved] = reordered.splice(index, 1)
+    reordered.splice(swapIndex, 0, moved)
 
-    await Promise.all([
-      fetch(`/api/projects/${current.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...current, order: swap.order })
-      }),
-      fetch(`/api/projects/${swap.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...swap, order: current.order })
-      })
-    ])
+    // Assign sequential order values and update all changed
+    await Promise.all(
+      reordered.map((p, i) =>
+        p.order !== i
+          ? fetch(`/api/projects/${p.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...p, order: i })
+            })
+          : Promise.resolve()
+      )
+    )
 
     fetchProjects()
     router.refresh()
