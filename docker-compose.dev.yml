@@ -4,7 +4,7 @@ services:
   web:
     image: node:20-slim
     working_dir: /app
-    command: sh -c "apt-get update && apt-get install -y sqlite3 && mkdir -p /app/data/uploads && npm install && npx prisma generate && npm run dev"
+    command: sh -c "apt-get update && apt-get install -y sqlite3 && mkdir -p /app/data/uploads && npm install && npx prisma generate && npx next dev -H 0.0.0.0 -p 3000"
     expose:
       - "3000"
     volumes:
