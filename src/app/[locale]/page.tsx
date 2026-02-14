@@ -48,23 +48,19 @@ export default async function HomePage() {
   return (
     <SnapScroll>
       <Header />
-      <section className="snap-start">
-        <Hero
-          title={about?.title || 'PRODUCER'}
-          backgroundVideo={settings?.backgroundVideo || undefined}
+      <Hero
+        title={about?.title || 'PRODUCER'}
+        backgroundVideo={settings?.backgroundVideo || undefined}
+      />
+      {about && (
+        <About
+          title={about.title}
+          bio={about.bio}
+          photoUrl={about.photoUrl}
         />
-      </section>
-      <section className="snap-start">
-        {about && (
-          <About
-            title={about.title}
-            bio={about.bio}
-            photoUrl={about.photoUrl}
-          />
-        )}
-        <Projects projects={projects} />
-        <Contacts contacts={contacts} />
-      </section>
+      )}
+      <Projects projects={projects} />
+      <Contacts contacts={contacts} />
     </SnapScroll>
   )
 }
