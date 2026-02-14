@@ -14,12 +14,14 @@ model User {
 }
 
 model About {
-  id       Int     @id @default(autoincrement())
-  titleRu  String
-  titleEn  String
-  bioRu    String
-  bioEn    String
-  photoUrl String?
+  id          Int     @id @default(autoincrement())
+  titleRu     String
+  titleEn     String
+  subtitleRu  String  @default("")
+  subtitleEn  String  @default("")
+  bioRu       String
+  bioEn       String
+  photoUrl    String?
 }
 
 model Project {

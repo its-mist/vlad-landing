@@ -5,17 +5,20 @@ import AnimatedSection from './AnimatedSection'
 
 interface AboutProps {
   title: string
+  subtitle?: string
   bio: string
   photoUrl?: string | null
 }
 
-export default function About({ title, bio, photoUrl }: AboutProps) {
+export default function About({ title, subtitle, bio, photoUrl }: AboutProps) {
   const t = useTranslations('about')
+
+  const displayTitle = subtitle || title
 
   return (
     <AnimatedSection
       id="about"
-      className="min-h-screen bg-black py-24 px-6 flex items-center"
+      className="min-h-screen bg-black pt-32 pb-24 px-6 flex items-center"
     >
       <div className="container mx-auto max-w-5xl">
         <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase mb-12">
@@ -28,7 +31,7 @@ export default function About({ title, bio, photoUrl }: AboutProps) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photoUrl}
-                alt={title}
+                alt={displayTitle}
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
             </div>
@@ -36,7 +39,7 @@ export default function About({ title, bio, photoUrl }: AboutProps) {
 
           <div className={photoUrl ? '' : 'md:col-span-2'}>
             <h3 className="text-white text-4xl md:text-5xl font-light tracking-wider mb-8">
-              {title}
+              {displayTitle}
             </h3>
             <p className="text-white/70 text-lg leading-relaxed whitespace-pre-line">
               {bio}

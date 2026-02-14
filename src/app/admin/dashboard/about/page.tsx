@@ -7,6 +7,8 @@ interface AboutData {
   id?: number
   titleRu: string
   titleEn: string
+  subtitleRu: string
+  subtitleEn: string
   bioRu: string
   bioEn: string
   photoUrl: string
@@ -17,6 +19,8 @@ export default function AboutPage() {
   const [data, setData] = useState<AboutData>({
     titleRu: '',
     titleEn: '',
+    subtitleRu: '',
+    subtitleEn: '',
     bioRu: '',
     bioEn: '',
     photoUrl: ''
@@ -36,6 +40,8 @@ export default function AboutPage() {
             id: result.id,
             titleRu: result.titleRu || '',
             titleEn: result.titleEn || '',
+            subtitleRu: result.subtitleRu || '',
+            subtitleEn: result.subtitleEn || '',
             bioRu: result.bioRu || '',
             bioEn: result.bioEn || '',
             photoUrl: result.photoUrl || ''
@@ -126,7 +132,7 @@ export default function AboutPage() {
       <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Title (Russian)</label>
+            <label className="block text-sm text-gray-400 mb-2">Hero Title (Russian)</label>
             <input
               type="text"
               value={data.titleRu}
@@ -134,9 +140,10 @@ export default function AboutPage() {
               className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:border-white/50"
               required
             />
+            <p className="text-xs text-gray-500 mt-1">Shown on the main hero screen</p>
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Title (English)</label>
+            <label className="block text-sm text-gray-400 mb-2">Hero Title (English)</label>
             <input
               type="text"
               value={data.titleEn}
@@ -144,6 +151,32 @@ export default function AboutPage() {
               className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:border-white/50"
               required
             />
+            <p className="text-xs text-gray-500 mt-1">Shown on the main hero screen</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">About Title (Russian)</label>
+            <input
+              type="text"
+              value={data.subtitleRu}
+              onChange={(e) => setData({ ...data, subtitleRu: e.target.value })}
+              placeholder="e.g. Владислав Максимов"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:border-white/50"
+            />
+            <p className="text-xs text-gray-500 mt-1">Shown in the About section</p>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">About Title (English)</label>
+            <input
+              type="text"
+              value={data.subtitleEn}
+              onChange={(e) => setData({ ...data, subtitleEn: e.target.value })}
+              placeholder="e.g. Vladislav Maksimov"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:border-white/50"
+            />
+            <p className="text-xs text-gray-500 mt-1">Shown in the About section</p>
           </div>
         </div>
 

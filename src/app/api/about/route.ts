@@ -17,19 +17,19 @@ export async function PUT(request: NextRequest) {
 
   try {
     const data = await request.json()
-    const { titleRu, titleEn, bioRu, bioEn, photoUrl } = data
+    const { titleRu, titleEn, subtitleRu, subtitleEn, bioRu, bioEn, photoUrl } = data
 
     const existing = await prisma.about.findFirst()
 
     if (existing) {
       const updated = await prisma.about.update({
         where: { id: existing.id },
-        data: { titleRu, titleEn, bioRu, bioEn, photoUrl }
+        data: { titleRu, titleEn, subtitleRu, subtitleEn, bioRu, bioEn, photoUrl }
       })
       return NextResponse.json(updated)
     } else {
       const created = await prisma.about.create({
-        data: { titleRu, titleEn, bioRu, bioEn, photoUrl }
+        data: { titleRu, titleEn, subtitleRu: subtitleRu || '', subtitleEn: subtitleEn || '', bioRu, bioEn, photoUrl }
       })
       return NextResponse.json(created)
     }

@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS "About" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "titleRu" TEXT NOT NULL,
     "titleEn" TEXT NOT NULL,
+    "subtitleRu" TEXT NOT NULL DEFAULT '',
+    "subtitleEn" TEXT NOT NULL DEFAULT '',
     "bioRu" TEXT NOT NULL,
     "bioEn" TEXT NOT NULL,
     "photoUrl" TEXT

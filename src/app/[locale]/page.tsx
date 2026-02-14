@@ -26,6 +26,7 @@ async function getData(locale: string) {
     about: about
       ? {
           title: locale === 'ru' ? about.titleRu : about.titleEn,
+          subtitle: locale === 'ru' ? (about.subtitleRu || '') : (about.subtitleEn || ''),
           bio: locale === 'ru' ? about.bioRu : about.bioEn,
           photoUrl: about.photoUrl
         }
@@ -55,6 +56,7 @@ export default async function HomePage() {
       {about && (
         <About
           title={about.title}
+          subtitle={about.subtitle || undefined}
           bio={about.bio}
           photoUrl={about.photoUrl}
         />
