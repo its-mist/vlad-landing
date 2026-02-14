@@ -26,7 +26,7 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl gosu && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
