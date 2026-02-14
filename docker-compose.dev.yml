@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    image: node:20-slim
+    working_dir: /app
+    command: sh -c "npm install && npx prisma generate && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=file:/app/data/database.sqlite
+      - UPLOAD_DIR=/app/data/uploads
+      - JWT_SECRET=dev-secret
+    restart: unless-stopped
