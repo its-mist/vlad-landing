@@ -1,5 +1,5 @@
 FROM node:20-slim AS base
-RUN apt-get update && apt-get install -y openssl gosu && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl gosu sqlite3 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Install dependencies (cached unless package.json changes)
@@ -28,7 +28,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 RUN mkdir -p /app/data
 
