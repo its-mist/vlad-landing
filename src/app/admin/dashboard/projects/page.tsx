@@ -98,6 +98,30 @@ export default function ProjectsPage() {
     }
   }
 
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const swapIndex = direction === 'up' ? index - 1 : index + 1
+    if (swapIndex < 0 || swapIndex >= projects.length) return
+
+    const current = projects[index]
+    const swap = projects[swapIndex]
+
+    await Promise.all([
+      fetch(`/api/projects/${current.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...current, order: swap.order })
+      }),
+      fetch(`/api/projects/${swap.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...swap, order: current.order })
+      })
+    ])
+
+    fetchProjects()
+    router.refresh()
+  }
+
   if (loading) {
     return <div className="text-gray-400">Loading...</div>
   }
@@ -146,12 +170,12 @@ export default function ProjectsPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-400 mb-2">YouTube URL</label>
+                <label className="block text-sm text-gray-400 mb-2">Video URL</label>
                 <input
                   type="url"
                   value={formData.youtubeUrl}
                   onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
-                  placeholder="https://www.youtube.com/watch?v=..."
+                  placeholder="https://vimeo.com/... or https://youtube.com/..."
                   className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:border-white/50"
                   required
                 />
@@ -177,27 +201,16 @@ export default function ProjectsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Order</label>
+              <div className="flex items-center">
+                <label className="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="number"
-                    value={formData.order}
-                    onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:border-white/50"
+                    type="checkbox"
+                    checked={formData.visible}
+                    onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
+                    className="w-5 h-5"
                   />
-                </div>
-                <div className="flex items-center">
-                  <label className="flex items-center gap-3 cursor-pointer mt-6">
-                    <input
-                      type="checkbox"
-                      checked={formData.visible}
-                      onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
-                      className="w-5 h-5"
-                    />
-                    <span>Visible</span>
-                  </label>
-                </div>
+                  <span>Visible</span>
+                </label>
               </div>
 
               <div className="flex gap-4 pt-4">
@@ -220,17 +233,42 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         {projects.length === 0 ? (
           <p className="text-gray-400">No projects yet. Add your first project!</p>
         ) : (
-          projects.map((project) => (
+          projects.map((project, index) => (
             <div
               key={project.id}
-              className="bg-gray-800 rounded-lg p-4 flex justify-between items-center"
+              className="bg-gray-800 rounded-lg p-4 flex items-center gap-4"
             >
+              {/* Reorder buttons */}
+              <div className="flex flex-col gap-1">
+                <button
+                  onClick={() => handleMove(index, 'up')}
+                  disabled={index === 0}
+                  className="p-1 text-gray-400 hover:text-white disabled:text-gray-700 transition-colors"
+                  title="Move up"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 15l-6-6-6 6" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => handleMove(index, 'down')}
+                  disabled={index === projects.length - 1}
+                  className="p-1 text-gray-400 hover:text-white disabled:text-gray-700 transition-colors"
+                  title="Move down"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+              </div>
+
               <div className="flex-1">
                 <div className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500">#{index + 1}</span>
                   <h3 className="font-medium">{project.titleRu}</h3>
                   {!project.visible && (
                     <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded">
