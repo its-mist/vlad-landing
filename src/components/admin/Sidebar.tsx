@@ -24,7 +24,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-gray-800 min-h-screen p-6 flex flex-col">
       <div className="mb-8">
         <Link href="/" className="text-xl font-light tracking-widest text-white">
-          PRODUCER
+          VLADISLAV MAKSIMOV
         </Link>
         <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
       </div>

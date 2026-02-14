@@ -26,7 +26,7 @@ function getVideoInfo(url: string): VideoInfo {
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
   if (vimeoMatch && vimeoMatch[1]) {
     return {
-      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`,
+      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1&muted=1`,
       thumbnailUrl: `https://vumbnail.com/${vimeoMatch[1]}.jpg`,
     }
   }
@@ -37,7 +37,7 @@ function getVideoInfo(url: string): VideoInfo {
   )
   if (youtubeMatch && youtubeMatch[1]) {
     return {
-      embedUrl: `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`,
+      embedUrl: `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1&mute=1`,
       thumbnailUrl: `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`,
     }
   }
