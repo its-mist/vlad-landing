@@ -5,15 +5,28 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Create default admin user
-  const hashedPassword = await bcrypt.hash('admin123', 10)
-  await prisma.user.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: {
-      username: 'admin',
-      password: hashedPassword,
-    },
-  })
+  const hashedPassword = await bcrypt.hash('T7#vQ9@Lm2$Rx8!Fp4^Zd6&Ns1*Wy', 10)
+
+await prisma.user.upsert({
+  where: { username: 'executive.producer.studio_92xk47lmq' },
+  update: {
+    password: hashedPassword,
+  },
+  create: {
+    username: 'executive.producer.studio_92xk47lmq',
+    password: hashedPassword,
+  },
+})
+
+
+  // await prisma.user.upsert({
+  //   where: { username: 'executive.producer.studio_92xk47lmq' },
+  //   update: {},
+  //   create: {
+  //     username: 'executive.producer.studio_92xk47lmq',
+  //     password: hashedPassword,
+  //   },
+  // })
 
   // Create default About section
   const existingAbout = await prisma.about.findFirst()

@@ -11,7 +11,7 @@ export default function AdminLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-gray-900 text-white">
+      <body className="antialiased bg-gray-950 text-white">
         {children}
       </body>
     </html>
