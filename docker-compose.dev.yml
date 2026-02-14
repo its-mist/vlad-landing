@@ -4,15 +4,38 @@ services:
   web:
     image: node:20-slim
     working_dir: /app
-    command: sh -c "npm install && npx prisma generate && npm run dev"
-    ports:
-      - "3000:3000"
+    command: sh -c "apt-get update && apt-get install -y sqlite3 && mkdir -p /app/data/uploads && npm install && npx prisma generate && npm run dev"
+    expose:
+      - "3000"
     volumes:
       - .:/app
-      - /app/node_modules
+      - node_modules:/app/node_modules
       - ./data:/app/data
     environment:
       - DATABASE_URL=file:/app/data/database.sqlite
       - UPLOAD_DIR=/app/data/uploads
-      - JWT_SECRET=dev-secret
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
     restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - web
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  node_modules:
