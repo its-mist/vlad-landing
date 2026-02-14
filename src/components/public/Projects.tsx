@@ -15,13 +15,21 @@ interface ProjectsProps {
   projects: Project[]
 }
 
-function getYoutubeEmbedUrl(url: string): string {
-  const videoIdMatch = url.match(
+function getEmbedUrl(url: string): string {
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`
+  }
+
+  // YouTube
+  const youtubeMatch = url.match(
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
   )
-  if (videoIdMatch && videoIdMatch[1]) {
-    return `https://www.youtube.com/embed/${videoIdMatch[1]}`
+  if (youtubeMatch && youtubeMatch[1]) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`
   }
+
   return url
 }
 
@@ -54,7 +62,7 @@ export default function Projects({ projects }: ProjectsProps) {
             >
               <div className="relative aspect-video overflow-hidden bg-gray-800 rounded-lg">
                 <iframe
-                  src={getYoutubeEmbedUrl(project.youtubeUrl)}
+                  src={getEmbedUrl(project.youtubeUrl)}
                   title={project.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
