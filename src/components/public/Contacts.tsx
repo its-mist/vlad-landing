@@ -64,7 +64,7 @@ export default function Contacts({ contacts }: ContactsProps) {
       className="bg-gray-900 pt-16 pb-24 px-6"
     >
       <div className="container mx-auto max-w-6xl">
-        <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase mb-16">
+        <h2 className="text-white/40 text-lg tracking-[0.3em] uppercase mb-16">
           {t('title')}
         </h2>
 

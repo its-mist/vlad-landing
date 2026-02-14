@@ -21,7 +21,7 @@ export default function About({ title, subtitle, bio, photoUrl }: AboutProps) {
       className="min-h-screen bg-black pt-40 pb-24 px-6 flex items-center"
     >
       <div className="container mx-auto max-w-5xl">
-        <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase mb-12">
+        <h2 className="text-white/40 text-lg tracking-[0.3em] uppercase mb-12">
           {t('title')}
         </h2>
 

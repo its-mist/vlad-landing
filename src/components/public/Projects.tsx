@@ -109,7 +109,7 @@ export default function Projects({ projects }: ProjectsProps) {
       className="min-h-screen bg-gradient-to-b from-black to-gray-900 py-24 px-6"
     >
       <div className="container mx-auto max-w-6xl">
-        <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase mb-16">
+        <h2 className="text-white/40 text-lg tracking-[0.3em] uppercase mb-16">
           {t('title')}
         </h2>
 
