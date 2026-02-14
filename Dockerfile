@@ -46,7 +46,7 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Create data directory with correct ownership
-RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
+RUN mkdir -p /app/prisma/data && chown -R nextjs:nodejs /app/prisma/data
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
