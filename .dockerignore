@@ -11,3 +11,9 @@ npm-debug.log
 .env.test.local
 .env.production.local
 data/
+certbot/
+nginx.conf
+nginx.Dockerfile
+nginx-entrypoint.sh
+docker-compose.yml
+init-letsencrypt.sh
