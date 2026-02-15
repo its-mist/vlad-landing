@@ -40,9 +40,19 @@ public/videos/
 next-env.d.ts
 
 # Database
-/data/*.sqlite
-/data/*.sqlite-journal
+*.sqlite
+*.sqlite-journal
+
+# Uploads
+data/uploads/
+prisma/data/
+
+# Certbot certificates
+certbot/
 
 # IDE
 .idea/
 .vscode/
+
+# Claude
+.claude/
