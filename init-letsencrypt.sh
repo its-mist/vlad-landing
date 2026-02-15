@@ -16,10 +16,6 @@ if [ -d "$data_path/conf/live/${domains[0]}" ]; then
   fi
 fi
 
-echo "### Creating required directories..."
-mkdir -p "$data_path/conf/live/${domains[0]}"
-mkdir -p "$data_path/www"
-
 echo "### Downloading recommended TLS parameters..."
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
   mkdir -p "$data_path/conf"
@@ -28,20 +24,11 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
-echo "### Creating dummy certificate for ${domains[0]}..."
-path="/etc/letsencrypt/live/${domains[0]}"
-docker compose run --rm --entrypoint "\
-  openssl req -x509 -nodes -newkey rsa:2048 -days 1\
-    -keyout '$path/privkey.pem' \
-    -out '$path/fullchain.pem' \
-    -subj '/CN=localhost'" certbot
+echo "### Making sure nginx is running..."
+docker compose up -d nginx
 echo
 
-echo "### Starting nginx..."
-docker compose up --force-recreate -d nginx
-echo
-
-echo "### Deleting dummy certificate for ${domains[0]}..."
+echo "### Removing dummy/old certificates for ${domains[0]}..."
 docker compose run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/${domains[0]} && \
   rm -Rf /etc/letsencrypt/archive/${domains[0]} && \
@@ -49,19 +36,16 @@ docker compose run --rm --entrypoint "\
 echo
 
 echo "### Requesting Let's Encrypt certificate for ${domains[*]}..."
-# Join $domains to -d args
 domain_args=""
 for domain in "${domains[@]}"; do
   domain_args="$domain_args -d $domain"
 done
 
-# Select appropriate email arg
 case "$email" in
   "") email_arg="--register-unsafely-without-email" ;;
   *) email_arg="--email $email" ;;
 esac
 
-# Enable staging mode if needed
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
 docker compose run --rm --entrypoint "\
@@ -78,4 +62,3 @@ echo "### Reloading nginx..."
 docker compose exec nginx nginx -s reload
 
 echo "### Done! SSL certificates are now installed."
-echo "### You can now run: docker compose up -d"

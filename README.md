@@ -28,17 +28,14 @@ cd vlad-landing
 # 2. Создать .env файл
 echo "JWT_SECRET=$(openssl rand -base64 32)" > .env
 
-# 3. Получить SSL сертификат
-chmod +x init-ssl.sh
-./init-ssl.sh
-
-# 4. Запустить контейнеры
+# 3. Запустить контейнеры (nginx стартует с dummy-сертификатами автоматически)
 docker compose up -d --build
 
-# 5. Инициализировать базу данных
-docker compose exec web npx prisma db push
-docker compose exec web npx prisma db seed
+# 4. Получить SSL сертификат
+bash init-letsencrypt.sh
 ```
+
+База данных инициализируется автоматически при первом запуске (entrypoint.sh делает `prisma db push` и `prisma db seed`).
 
 ### Готово
 
