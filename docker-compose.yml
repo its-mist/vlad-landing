@@ -12,7 +12,9 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
     entrypoint: /nginx-entrypoint.sh
     ports:
       - "80:80"
