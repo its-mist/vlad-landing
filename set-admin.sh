@@ -1,26 +1,9 @@
 #!/bin/bash
-
-# Runs a temporary node container with access to the app's database
-# to create/update admin credentials using bcryptjs + better-sqlite3
-
 docker run --rm \
   -v "$(pwd)/data:/data" \
-  node:20-slim sh -c '
-    npm install --no-save bcryptjs better-sqlite3 2>/dev/null 1>/dev/null
-    node -e "
-      const bcrypt = require(\"bcryptjs\");
-      const Database = require(\"better-sqlite3\");
-      const db = new Database(\"/data/database.sqlite\");
-      const hash = bcrypt.hashSync(\"T7#vQ9@Lm2\$Rx8!Fp4^Zd6&Ns1*Wy\", 10);
-      const username = \"executive.producer.studio_92xk47lmq\";
-      const existing = db.prepare(\"SELECT id FROM User WHERE username = ?\").get(username);
-      if (existing) {
-        db.prepare(\"UPDATE User SET password = ? WHERE username = ?\").run(hash, username);
-        console.log(\"Updated user:\", username);
-      } else {
-        db.prepare(\"INSERT INTO User (username, password) VALUES (?, ?)\").run(username, hash);
-        console.log(\"Created user:\", username);
-      }
-      db.close();
-    "
+  -v "$(pwd)/set-admin.js:/app/set-admin.js:ro" \
+  node:20-bookworm-slim bash -c '
+    apt-get update -qq && apt-get install -y -qq python3 make g++ > /dev/null 2>&1
+    cd /app && npm install --no-save bcryptjs better-sqlite3 > /dev/null 2>&1
+    node set-admin.js
   '
