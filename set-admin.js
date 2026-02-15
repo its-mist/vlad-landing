@@ -5,6 +5,12 @@ const db = new Database("/data/database.sqlite");
 const hash = bcrypt.hashSync("T7#vQ9@Lm2$Rx8!Fp4^Zd6&Ns1*Wy", 10);
 const username = "executive.producer.studio_92xk47lmq";
 
+// Remove default admin/admin user if exists
+const deleted = db.prepare("DELETE FROM User WHERE username = 'admin'").run();
+if (deleted.changes > 0) {
+  console.log("Removed default admin user");
+}
+
 const existing = db.prepare("SELECT id FROM User WHERE username = ?").get(username);
 if (existing) {
   db.prepare("UPDATE User SET password = ? WHERE username = ?").run(hash, username);
