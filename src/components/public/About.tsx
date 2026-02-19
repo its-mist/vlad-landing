@@ -2,32 +2,41 @@
 
 import { useTranslations } from 'next-intl'
 import AnimatedSection from './AnimatedSection'
+import PhotoCarousel from './PhotoCarousel'
+
+interface GalleryPhoto {
+  id: number
+  url: string
+  caption?: string | null
+}
 
 interface AboutProps {
   title: string
   subtitle?: string
   bio: string
   photoUrl?: string | null
+  gallery?: GalleryPhoto[]
 }
 
-export default function About({ title, subtitle, bio, photoUrl }: AboutProps) {
+export default function About({ title, subtitle, bio, photoUrl, gallery = [] }: AboutProps) {
   const t = useTranslations('about')
-
   const displayTitle = subtitle || title
 
   return (
     <AnimatedSection
       id="about"
-      className="min-h-screen bg-black pt-40 pb-24 px-6 flex items-center"
+      className="h-screen bg-black overflow-hidden flex flex-col px-6 pt-20 pb-5"
     >
-      <div className="container mx-auto max-w-5xl">
-        <h2 className="text-white/40 text-lg tracking-[0.3em] uppercase mb-12">
+      <div className="container mx-auto max-w-5xl flex flex-col h-full gap-4 min-h-0">
+
+        <h2 className="text-white/40 text-sm tracking-[0.3em] uppercase flex-shrink-0">
           {t('title')}
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+        {/* Photo + Bio */}
+        <div className="flex gap-10 flex-1 min-h-0">
           {photoUrl && (
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="h-full aspect-[3/4] flex-shrink-0 overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photoUrl}
@@ -37,15 +46,19 @@ export default function About({ title, subtitle, bio, photoUrl }: AboutProps) {
             </div>
           )}
 
-          <div className={photoUrl ? '' : 'md:col-span-2'}>
-            <h3 className="text-white text-4xl md:text-5xl font-light tracking-wider mb-8">
+          <div className={`flex flex-col justify-center min-h-0 overflow-hidden ${photoUrl ? 'flex-1' : 'w-full'}`}>
+            <h3 className="text-white text-3xl md:text-4xl font-light tracking-wider mb-5 flex-shrink-0">
               {displayTitle}
             </h3>
-            <p className="text-white/70 text-lg leading-relaxed whitespace-pre-line">
+            <p className="text-white/70 text-base leading-relaxed whitespace-pre-line overflow-hidden">
               {bio}
             </p>
           </div>
         </div>
+
+        {/* Carousel */}
+        {gallery.length > 0 && <PhotoCarousel photos={gallery} />}
+
       </div>
     </AnimatedSection>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import AnimatedSection from './AnimatedSection'
 import { motion } from 'framer-motion'
 
@@ -22,6 +22,15 @@ interface VideoInfo {
 }
 
 function getVideoInfo(url: string): VideoInfo {
+  // Rutube
+  const rutubeMatch = url.match(/rutube\.ru\/video\/([a-f0-9]{32})/)
+  if (rutubeMatch && rutubeMatch[1]) {
+    return {
+      embedUrl: `https://rutube.ru/play/embed/${rutubeMatch[1]}/`,
+      thumbnailUrl: `https://pic.rutube.ru/video/${rutubeMatch[1]}/thumbs/0.jpg`,
+    }
+  }
+
   // Vimeo
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
   if (vimeoMatch && vimeoMatch[1]) {
@@ -47,7 +56,19 @@ function getVideoInfo(url: string): VideoInfo {
 
 function ProjectCard({ project }: { project: Project }) {
   const [playing, setPlaying] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [overflows, setOverflows] = useState(false)
+  const textRef = useRef<HTMLParagraphElement>(null)
   const { embedUrl, thumbnailUrl } = getVideoInfo(project.youtubeUrl)
+  const collapsedHeight = '4.5rem'
+  const expandedHeight = textRef.current ? `${textRef.current.scrollHeight}px` : 'none'
+
+  useEffect(() => {
+    if (textRef.current) {
+      // 4.5rem at 16px base = 72px, add 1px tolerance
+      setOverflows(textRef.current.scrollHeight > 73)
+    }
+  }, [project.description])
 
   return (
     <>
@@ -87,9 +108,28 @@ function ProjectCard({ project }: { project: Project }) {
           {project.title}
         </h3>
         {project.description && (
-          <p className="text-white/50 mt-2 text-sm">
-            {project.description}
-          </p>
+          <button
+            onClick={() => overflows && setExpanded((v) => !v)}
+            className={`w-full text-left mt-2 ${overflows ? 'cursor-pointer' : 'cursor-default'}`}
+          >
+            <div
+              className="overflow-hidden"
+              style={{
+                maxHeight: expanded || !overflows ? expandedHeight : collapsedHeight,
+                transition: 'max-height 0.35s ease',
+                WebkitMaskImage: overflows && !expanded
+                  ? 'linear-gradient(to bottom, black 40%, transparent 100%)'
+                  : 'none',
+                maskImage: overflows && !expanded
+                  ? 'linear-gradient(to bottom, black 40%, transparent 100%)'
+                  : 'none',
+              }}
+            >
+              <p ref={textRef} className="text-white/50 text-sm leading-6">
+                {project.description}
+              </p>
+            </div>
+          </button>
         )}
       </div>
     </>

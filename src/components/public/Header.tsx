@@ -8,6 +8,12 @@ import LanguageSwitcher from './LanguageSwitcher'
 export default function Header() {
   const t = useTranslations('nav')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+
+  const navClass = (id: string) =>
+    `text-base tracking-wider font-light transition-colors duration-500 ${
+      hoveredItem && hoveredItem !== id ? 'text-white/30' : 'text-white'
+    }`
 
   const scrollTo = (id: string) => {
     setMenuOpen(false)
@@ -28,19 +34,25 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-8">
           <button
             onClick={() => scrollTo('about')}
-            className="text-white/80 hover:text-white text-base tracking-wider transition-colors font-light"
+            onMouseEnter={() => setHoveredItem('about')}
+            onMouseLeave={() => setHoveredItem(null)}
+            className={navClass('about')}
           >
             {t('about')}
           </button>
           <button
             onClick={() => scrollTo('projects')}
-            className="text-white/80 hover:text-white text-base tracking-wider transition-colors font-light"
+            onMouseEnter={() => setHoveredItem('projects')}
+            onMouseLeave={() => setHoveredItem(null)}
+            className={navClass('projects')}
           >
             {t('projects')}
           </button>
           <button
             onClick={() => scrollTo('contacts')}
-            className="text-white/80 hover:text-white text-base tracking-wider transition-colors font-light"
+            onMouseEnter={() => setHoveredItem('contacts')}
+            onMouseLeave={() => setHoveredItem(null)}
+            className={navClass('contacts')}
           >
             {t('contacts')}
           </button>

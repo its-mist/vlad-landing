@@ -48,3 +48,11 @@ model Settings {
   backgroundVideo String
   siteTitle       String @default("Producer Portfolio")
 }
+
+model GalleryPhoto {
+  id        Int      @id @default(autoincrement())
+  url       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}

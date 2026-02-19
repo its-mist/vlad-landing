@@ -6,11 +6,12 @@ import About from '@/components/public/About'
 import Projects from '@/components/public/Projects'
 import Contacts from '@/components/public/Contacts'
 import SnapScroll from '@/components/public/SnapScroll'
+import FloatingContacts from '@/components/public/FloatingContacts'
 
 export const dynamic = 'force-dynamic'
 
 async function getData(locale: string) {
-  const [about, projects, contacts, settings] = await Promise.all([
+  const [about, projects, contacts, settings, gallery] = await Promise.all([
     prisma.about.findFirst(),
     prisma.project.findMany({
       where: { visible: true },
@@ -19,10 +20,12 @@ async function getData(locale: string) {
     prisma.contact.findMany({
       orderBy: { order: 'asc' }
     }),
-    prisma.settings.findFirst()
+    prisma.settings.findFirst(),
+    prisma.galleryPhoto.findMany({ orderBy: { order: 'asc' } })
   ])
 
   return {
+    gallery,
     about: about
       ? {
           title: locale === 'ru' ? about.titleRu : about.titleEn,
@@ -44,25 +47,29 @@ async function getData(locale: string) {
 
 export default async function HomePage() {
   const locale = await getLocale()
-  const { about, projects, contacts, settings } = await getData(locale)
+  const { about, projects, contacts, settings, gallery } = await getData(locale)
 
   return (
-    <SnapScroll>
-      <Header />
-      <Hero
-        title={about?.title || 'PRODUCER'}
-        backgroundVideo={settings?.backgroundVideo || undefined}
-      />
-      {about && (
-        <About
-          title={about.title}
-          subtitle={about.subtitle || undefined}
-          bio={about.bio}
-          photoUrl={about.photoUrl}
+    <>
+      <SnapScroll>
+        <Header />
+        <Hero
+          title={about?.title || 'PRODUCER'}
+          backgroundVideo={settings?.backgroundVideo || undefined}
         />
-      )}
-      <Projects projects={projects} />
-      <Contacts contacts={contacts} />
-    </SnapScroll>
+        {about && (
+          <About
+            title={about.title}
+            subtitle={about.subtitle || undefined}
+            bio={about.bio}
+            photoUrl={about.photoUrl}
+            gallery={gallery}
+          />
+        )}
+        <Projects projects={projects} />
+        <Contacts contacts={contacts} />
+      </SnapScroll>
+      <FloatingContacts contacts={contacts} />
+    </>
   )
 }

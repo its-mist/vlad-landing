@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 
 interface HeroProps {
@@ -8,16 +9,49 @@ interface HeroProps {
 }
 
 export default function Hero({ title, backgroundVideo }: HeroProps) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const tryPlay = () => {
+      video.play().catch(() => {
+        // Autoplay blocked — retry on next user interaction
+        const resume = () => { video.play().catch(() => {}); document.removeEventListener('click', resume) }
+        document.addEventListener('click', resume, { once: true })
+      })
+    }
+
+    const onEnded = () => {
+      video.currentTime = 0
+      tryPlay()
+    }
+
+    const onPause = () => {
+      // Re-play if paused unexpectedly (not by user)
+      if (!video.ended) tryPlay()
+    }
+
+    video.addEventListener('ended', onEnded)
+    video.addEventListener('pause', onPause)
+    tryPlay()
+
+    return () => {
+      video.removeEventListener('ended', onEnded)
+      video.removeEventListener('pause', onPause)
+    }
+  }, [backgroundVideo])
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background */}
       {backgroundVideo ? (
         <video
-          autoPlay
+          ref={videoRef}
           muted
-          loop
           playsInline
+          loop
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={backgroundVideo} type="video/mp4" />
