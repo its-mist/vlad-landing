@@ -68,7 +68,7 @@ export default function Contacts({ contacts }: ContactsProps) {
           {t('title')}
         </h2>
 
-        <div className="grid gap-8">
+        <div className="grid gap-5">
           {contacts.map((contact) => (
             <a
               key={contact.id}
@@ -86,7 +86,6 @@ export default function Contacts({ contacts }: ContactsProps) {
             </a>
           ))}
         </div>
-
       </div>
     </AnimatedSection>
   )

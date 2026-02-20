@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Contact {
   id: number
@@ -51,14 +51,23 @@ function getContactLink(type: string, value: string): string {
 }
 
 export default function FloatingContacts({ contacts }: FloatingContactsProps) {
-  const [visible, setVisible] = useState(true)
+  const [sectionVisible, setSectionVisible] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [listHeight, setListHeight] = useState(0)
+
+  useEffect(() => {
+    if (listRef.current) {
+      setListHeight(listRef.current.scrollHeight)
+    }
+  }, [contacts.length])
 
   useEffect(() => {
     const section = document.getElementById('contacts')
     if (!section) return
 
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
+      ([entry]) => setSectionVisible(entry.isIntersecting),
       { threshold: 0.2 }
     )
 
@@ -68,27 +77,54 @@ export default function FloatingContacts({ contacts }: FloatingContactsProps) {
 
   if (contacts.length === 0) return null
 
+  const hidden = sectionVisible
+
   return (
     <div
-      className="fixed bottom-6 right-6 z-50 transition-all duration-300"
-      style={{ opacity: visible ? 1 : 0, pointerEvents: visible ? 'auto' : 'none' }}
+      className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 transition-all duration-300"
+      style={{ opacity: hidden ? 0 : 1, pointerEvents: hidden ? 'none' : 'auto' }}
     >
-      <div className="bg-gray-900/95 backdrop-blur border border-white/10 rounded-xl px-4 py-3 flex flex-col gap-2 shadow-2xl min-w-[180px]">
-        {contacts.map((contact) => (
-          <a
-            key={contact.id}
-            href={getContactLink(contact.type, contact.value)}
-            target={contact.type !== 'email' && contact.type !== 'phone' ? '_blank' : undefined}
-            rel={contact.type !== 'email' && contact.type !== 'phone' ? 'noopener noreferrer' : undefined}
-            className="flex items-center gap-3 text-white/60 hover:text-white transition-colors text-sm"
-          >
-            <span className="text-white/40 shrink-0">
-              {contactIcons[contact.type] || contactIcons.email}
-            </span>
-            <span className="truncate">{contact.value}</span>
-          </a>
-        ))}
+      {/* Contact list — on mobile collapses, on desktop always open */}
+      <div
+        className="overflow-hidden transition-[height] duration-300 ease-in-out md:!h-auto md:!overflow-visible"
+        style={{ height: expanded ? listHeight : 0 }}
+      >
+        <div
+          ref={listRef}
+          className="bg-gray-900/95 backdrop-blur border border-white/10 rounded-xl px-4 py-3 flex flex-col gap-2 shadow-2xl min-w-[180px] mb-2"
+        >
+          {contacts.map((contact) => (
+            <a
+              key={contact.id}
+              href={getContactLink(contact.type, contact.value)}
+              target={contact.type !== 'email' && contact.type !== 'phone' ? '_blank' : undefined}
+              rel={contact.type !== 'email' && contact.type !== 'phone' ? 'noopener noreferrer' : undefined}
+              className="flex items-center gap-3 text-white/60 hover:text-white transition-colors text-sm"
+            >
+              <span className="text-white/40 shrink-0">
+                {contactIcons[contact.type] || contactIcons.email}
+              </span>
+              <span className="truncate">{contact.value}</span>
+            </a>
+          ))}
+        </div>
       </div>
+
+      {/* Toggle button — mobile only */}
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        aria-label={expanded ? 'Скрыть контакты' : 'Показать контакты'}
+        className="md:hidden w-10 h-10 rounded-full bg-gray-900/95 backdrop-blur border border-white/10 shadow-2xl flex items-center justify-center text-white/60 hover:text-white transition-colors"
+      >
+        <svg
+          className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
     </div>
   )
 }

@@ -56,7 +56,7 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
 
   return (
     <div className="flex-shrink-0">
-      <div className="relative h-56 overflow-hidden rounded-lg">
+      <div className="relative h-[min(14rem,22vh)] overflow-hidden rounded-lg">
         {/* Track */}
         <div
           style={{

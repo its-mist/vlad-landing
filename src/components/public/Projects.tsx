@@ -47,7 +47,7 @@ function getVideoInfo(url: string): VideoInfo {
   if (youtubeMatch && youtubeMatch[1]) {
     return {
       embedUrl: `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1&mute=1`,
-      thumbnailUrl: `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`,
+      thumbnailUrl: `https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg`,
     }
   }
 
@@ -91,6 +91,8 @@ function ProjectCard({ project }: { project: Project }) {
               src={thumbnailUrl}
               alt={project.title}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-black/20 group-hover/play:bg-black/40 transition-colors" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -153,7 +155,7 @@ export default function Projects({ projects }: ProjectsProps) {
           {t('title')}
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 items-start">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
