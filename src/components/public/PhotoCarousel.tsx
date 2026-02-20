@@ -27,8 +27,8 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
     return () => cancelAnimationFrame(id)
   }, [instant])
 
-  // 1 photo per view: track = total * 100%, each photo = 1/total of track = 100% of container
-  const offset = n > 1 ? -(vIndex / total) * 100 : 0
+  // 3 photos per view: track = total/3 * 100%, each photo = 1/3 of container
+  const offset = n > 1 ? -((vIndex - 1) / total) * 100 : 0
 
   const handleTransitionEnd = useCallback(() => {
     if (vIndex >= total - 1) {
@@ -55,11 +55,11 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
   return (
     <div className="flex-shrink-0">
       <div className="relative h-[min(14rem,22vh)] overflow-hidden rounded-lg">
-        {/* Track: total photos wide, each photo = full container width */}
+        {/* Track: total/3 wide → 3 photos visible at once */}
         <div
           style={{
             display: 'flex',
-            width: `${total * 100}%`,
+            width: `${(total / 3) * 100}%`,
             height: '100%',
             transform: `translateX(${offset}%)`,
             transition: instant ? 'none' : 'transform 0.35s ease',
@@ -69,7 +69,7 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
           {extended.map((photo, i) => (
             <div
               key={`${photo.id}-${i}`}
-              style={{ width: `${100 / total}%` }}
+              style={{ width: `${100 / total}%`, padding: '0 3px' }}
               className="flex-shrink-0 h-full"
             >
               <div className="w-full h-full overflow-hidden rounded-lg">
@@ -77,7 +77,9 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
                 <img
                   src={photo.url}
                   alt={photo.caption || ''}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-contain transition-[filter] duration-300 ${
+                    n >= 3 && i !== vIndex ? 'brightness-50' : ''
+                  }`}
                 />
               </div>
             </div>
