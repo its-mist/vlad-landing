@@ -61,12 +61,10 @@ function ProjectCard({ project }: { project: Project }) {
   const textRef = useRef<HTMLParagraphElement>(null)
   const { embedUrl, thumbnailUrl } = getVideoInfo(project.youtubeUrl)
   const collapsedHeight = '4.5rem'
-  const expandedHeight = textRef.current ? `${textRef.current.scrollHeight}px` : 'none'
 
   useEffect(() => {
     if (textRef.current) {
-      // 4.5rem at 16px base = 72px, add 1px tolerance
-      setOverflows(textRef.current.scrollHeight > 73)
+      setOverflows(textRef.current.scrollHeight > textRef.current.clientHeight + 1)
     }
   }, [project.description])
 
@@ -117,7 +115,9 @@ function ProjectCard({ project }: { project: Project }) {
             <div
               className="overflow-hidden"
               style={{
-                maxHeight: expanded || !overflows ? expandedHeight : collapsedHeight,
+                maxHeight: expanded && overflows
+                  ? `${textRef.current?.scrollHeight ?? 9999}px`
+                  : collapsedHeight,
                 transition: 'max-height 0.35s ease',
                 WebkitMaskImage: overflows && !expanded
                   ? 'linear-gradient(to bottom, black 40%, transparent 100%)'
