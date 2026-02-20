@@ -12,7 +12,6 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
   const n = photos.length
 
   // Infinite strip: [last, ...photos, first]
-  // So vIndex=1 → first real photo, vIndex=n → last real photo
   const extended = n > 1 ? [photos[n - 1], ...photos, photos[0]] : photos
   const total = extended.length
 
@@ -20,7 +19,6 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
   const [realIndex, setRealIndex] = useState(0)
   const [instant, setInstant] = useState(false)
 
-  // After instant jump re-enable transition in next paint
   useEffect(() => {
     if (!instant) return
     const id = requestAnimationFrame(() =>
@@ -29,8 +27,8 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
     return () => cancelAnimationFrame(id)
   }, [instant])
 
-  // translateX(%): each photo = 1/total of track, show photo at (vIndex-1) on left edge
-  const offset = n > 1 ? -((vIndex - 1) / total) * 100 : 0
+  // 1 photo per view: track = total * 100%, each photo = 1/total of track = 100% of container
+  const offset = n > 1 ? -(vIndex / total) * 100 : 0
 
   const handleTransitionEnd = useCallback(() => {
     if (vIndex >= total - 1) {
@@ -57,11 +55,11 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
   return (
     <div className="flex-shrink-0">
       <div className="relative h-[min(14rem,22vh)] overflow-hidden rounded-lg">
-        {/* Track */}
+        {/* Track: total photos wide, each photo = full container width */}
         <div
           style={{
             display: 'flex',
-            width: `${(total / 3) * 100}%`,
+            width: `${total * 100}%`,
             height: '100%',
             transform: `translateX(${offset}%)`,
             transition: instant ? 'none' : 'transform 0.35s ease',
@@ -71,7 +69,7 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
           {extended.map((photo, i) => (
             <div
               key={`${photo.id}-${i}`}
-              style={{ width: `${100 / total}%`, padding: '0 3px' }}
+              style={{ width: `${100 / total}%` }}
               className="flex-shrink-0 h-full"
             >
               <div className="w-full h-full overflow-hidden rounded-lg">
@@ -79,9 +77,7 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
                 <img
                   src={photo.url}
                   alt={photo.caption || ''}
-                  className={`w-full h-full object-cover transition-[filter] duration-300 ${
-                    n >= 3 && i !== vIndex ? 'brightness-50' : ''
-                  }`}
+                  className="w-full h-full object-cover"
                 />
               </div>
             </div>
