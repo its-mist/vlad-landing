@@ -56,6 +56,14 @@ CREATE TABLE IF NOT EXISTS "Settings" (
     "siteTitle" TEXT NOT NULL DEFAULT 'Producer Portfolio'
 );
 
+CREATE TABLE IF NOT EXISTS "GalleryPhoto" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "url" TEXT NOT NULL,
+    "caption" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "checksum" TEXT NOT NULL,
@@ -84,6 +92,17 @@ SQL
 
   echo "Database initialized successfully."
 fi
+
+# Apply any missing tables for existing databases (idempotent migrations)
+gosu nextjs sqlite3 "$DB_PATH" <<'SQL'
+CREATE TABLE IF NOT EXISTS "GalleryPhoto" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "url" TEXT NOT NULL,
+    "caption" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+SQL
 
 # Start the app as nextjs user
 exec gosu nextjs node server.js
