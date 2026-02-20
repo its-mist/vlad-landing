@@ -64,7 +64,8 @@ function ProjectCard({ project }: { project: Project }) {
 
   useEffect(() => {
     if (textRef.current) {
-      setOverflows(textRef.current.scrollHeight > textRef.current.clientHeight + 1)
+      const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
+      setOverflows(textRef.current.scrollHeight > 4.5 * rootFontSize + 1)
     }
   }, [project.description])
 
