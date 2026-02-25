@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 
 interface Photo {
   id: number
@@ -18,6 +19,10 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
   const [vIndex, setVIndex] = useState(n > 1 ? 1 : 0)
   const [realIndex, setRealIndex] = useState(0)
   const [instant, setInstant] = useState(false)
+  const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     if (!instant) return
@@ -26,6 +31,17 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
     )
     return () => cancelAnimationFrame(id)
   }, [instant])
+
+  useEffect(() => {
+    if (!lightboxPhoto) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightboxPhoto(null) }
+    document.addEventListener('keydown', handler)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handler)
+      document.body.style.overflow = ''
+    }
+  }, [lightboxPhoto])
 
   // 3 photos per view: track = total/3 * 100%, each photo = 1/3 of container
   const offset = n > 1 ? -((vIndex - 1) / total) * 100 : 0
@@ -77,9 +93,10 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
                 <img
                   src={photo.url}
                   alt={photo.caption || ''}
-                  className={`w-full h-full object-contain transition-[filter] duration-300 ${
+                  className={`w-full h-full object-contain transition-[filter] duration-300 cursor-pointer ${
                     n >= 3 && i !== vIndex ? 'brightness-50' : ''
                   }`}
+                  onClick={() => setLightboxPhoto(photo)}
                 />
               </div>
             </div>
@@ -126,6 +143,32 @@ export default function PhotoCarousel({ photos }: { photos: Photo[] }) {
             />
           ))}
         </div>
+      )}
+
+      {mounted && lightboxPhoto && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center"
+          onClick={() => setLightboxPhoto(null)}
+        >
+          <button
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-colors z-10"
+            onClick={(e) => { e.stopPropagation(); setLightboxPhoto(null) }}
+            aria-label="Закрыть"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxPhoto.url}
+            alt={lightboxPhoto.caption || ''}
+            className="max-w-full max-h-full object-contain select-none"
+            style={{ maxHeight: '100dvh', maxWidth: '100dvw', padding: '3rem 1rem 1rem' }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>,
+        document.body
       )}
     </div>
   )
